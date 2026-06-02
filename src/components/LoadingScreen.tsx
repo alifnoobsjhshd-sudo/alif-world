@@ -15,7 +15,7 @@ export const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete
     // Preload critical assets so they are fully loaded/cached before the loading screen completes
     const preloadAssets = async () => {
       const assets = [
-        '/src/assets/images/alif_character_pure_transparent_1780383675414.png'
+        '/alif-character.png'
       ];
       try {
         await Promise.all(

@@ -13,7 +13,7 @@ export const SEO: React.FC<SEOProps> = React.memo(({
   title,
   description,
   keywords = "Alif, Alif Portfolio, Web Designer, Creative Developer, Frontend Developer, React Developer, Tailwind CSS Expert, UI/UX Designer, AstroJS",
-  image = "/src/assets/images/alif_character_pure_transparent_1780383675414.png",
+  image = "/alif-character.png",
   url = window.location.href,
   type = "website"
 }) => {
