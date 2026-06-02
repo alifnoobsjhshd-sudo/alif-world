@@ -23,6 +23,7 @@ import { ScrollHint }     from './components/ScrollHint';
 import { PaperAirplane }  from './components/PaperAirplane';
 import { LoadingScreen }   from './components/LoadingScreen';
 import { ProjectsPage }   from './pages/ProjectsPage';
+import { SEO }            from './components/SEO';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { AnimatePresence } from 'motion/react';
 
@@ -285,6 +286,10 @@ function Portfolio({ initialLoading }: { initialLoading: boolean }) {
 
   return (
     <div className="relative bg-[#f8f8f8] text-gray-800 font-sans selection:bg-blue-100 h-screen w-screen overflow-hidden">
+      <SEO 
+        title="Alif | Creative Web Developer & Designer Portfolio"
+        description="Step into the digital space of Alif. Exploring highly interactive interfaces, game panels, modern websites, and beautiful frontend UI concepts built with passion."
+      />
       
       {/* ── Cinematic entrance ───────────────────────────────────────────────── */}
       <motion.div

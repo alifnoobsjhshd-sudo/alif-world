@@ -1,6 +1,10 @@
 {
-  "name": "",
-  "description": "",
-  "requestFramePermissions": [],
-  "majorCapabilities": []
+  "name": "Alif Portfolio",
+  "description": "A highly creative 3.5D layered web developer portfolio showcasing custom interactive projects and responsive templates engineered by Alif.",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }

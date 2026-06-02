@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
+import { SEO } from '../components/SEO';
 
 export const ProjectsPage = React.memo(({ initialLoading }: { initialLoading: boolean }) => {
   const navigate = useNavigate();
@@ -163,6 +164,10 @@ export const ProjectsPage = React.memo(({ initialLoading }: { initialLoading: bo
 
   return (
     <div className="min-h-screen bg-[#f8f8f8] font-sans relative">
+      <SEO 
+        title="Projects | Alif Digital Web Showcases"
+        description="A showcase of digital web experiences, custom platforms, premium interfaces, and creative web designs engineered by Alif."
+      />
       <AnimatePresence>
         {shouldShowLoader && (
           <motion.div 
