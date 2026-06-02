@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import alifCharacterImg from '../assets/images/alif_character_pure_transparent_1780383675414.png';
 
 interface SEOProps {
   title: string;
@@ -13,7 +14,7 @@ export const SEO: React.FC<SEOProps> = React.memo(({
   title,
   description,
   keywords = "Alif, Alif Portfolio, Web Designer, Creative Developer, Frontend Developer, React Developer, Tailwind CSS Expert, UI/UX Designer, AstroJS",
-  image = "/alif-character.png",
+  image = alifCharacterImg,
   url = window.location.href,
   type = "website"
 }) => {

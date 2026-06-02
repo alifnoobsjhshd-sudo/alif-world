@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion, useSpring } from 'motion/react';
+import alifCharacterImg from '../assets/images/alif_character_pure_transparent_1780383675414.png';
 
 export const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
   const [progress, setProgress] = useState(0);
@@ -15,7 +16,7 @@ export const LoadingScreen: React.FC<{ onComplete: () => void }> = ({ onComplete
     // Preload critical assets so they are fully loaded/cached before the loading screen completes
     const preloadAssets = async () => {
       const assets = [
-        '/alif-character.png'
+        alifCharacterImg
       ];
       try {
         await Promise.all(

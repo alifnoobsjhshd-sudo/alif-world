@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
+import alifCharacterImg from '../assets/images/alif_character_pure_transparent_1780383675414.png';
 
 export const AlifCharacter = React.memo(() => (
   <div className="relative w-96 h-[390px] flex flex-col items-center justify-center scale-105 sm:scale-115">
@@ -15,7 +16,7 @@ export const AlifCharacter = React.memo(() => (
         
         {/* Use the provided character image */}
         <img 
-          src="/alif-character.png" 
+          src={alifCharacterImg} 
           alt="Alif Character"
           className="w-full max-w-[350px] sm:max-w-[400px] h-auto drop-shadow-[0_20px_50px_rgba(0,0,0,0.15)] object-contain select-none"
           style={{ imageRendering: 'auto', contentVisibility: 'auto' }}
