@@ -29,8 +29,8 @@ export const Section = React.memo(({
   // underneath, so this never creates a blank handoff.
   const opacity = useTransform(
     relativeDepth,
-    [-5000, -2600, -1600, -900, -400, 0, 400, 900, 1800, 3200, 5000],
-    [0, 0.2, 0.45, 0.62, 0.72, 0.42, 0.5, 0.65, 0.76, 0.48, 0]
+    [-5000, -3400, -2600, -2000, -1400, -900, -500, 0, 400, 800, 1400, 2200, 3000, 4000, 5000],
+    [0, 0.08, 0.16, 0.24, 0.3, 0.34, 0.38, 0.42, 0.36, 0.42, 0.56, 0.7, 0.76, 0.36, 0]
   );
 
   // Disable pointer events if section is far from focus
