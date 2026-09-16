@@ -20,10 +20,11 @@ export const FloatingCloud = React.memo(({
     return diff;
   });
 
-  // Clouds appear from far (relativeDepth=6000) and fly past (relativeDepth=-2500)
+  // Clouds appear from far away, soften as the camera gets close, and fade
+  // completely after flying past the viewer.
   const z       = useTransform(relativeDepth, [-2500, 0, 6000], [1200, 0, -2800]);
   const scale   = useTransform(relativeDepth, [-2500, 0, 6000], [3.5 * baseScale, baseScale, 0.04]);
-  const opacity = useTransform(relativeDepth, [-2000, -800, 0, 2500, 6000], [0, 0.65, 0.90, 0.55, 0]);
+  const opacity = useTransform(relativeDepth, [-2000, -800, 0, 700, 1800, 3000, 6000], [0, 0.55, 0.3, 0.48, 0.62, 0.42, 0]);
 
   return (
     <motion.div
