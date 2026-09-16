@@ -24,13 +24,13 @@ export const Section = React.memo(({
   // scroll never reveals a blank frame between their fades.
   const z       = useTransform(relativeDepth, [-1800, 0, 5000], [500,  0, -2200]);
   const scale   = useTransform(relativeDepth, [-1800, 0, 5000], [1.1, 1,  0.18]);
-  // Let content soften in the camera's close range instead of staying fully
-  // opaque as it rushes past the viewer. The neighboring scene remains visible
-  // underneath, so this never creates a blank handoff.
+  // Section content reaches its visual peak farther away, then starts fading
+  // early while the camera approaches. This keeps Hero/About/Works from
+  // staying fully opaque until they are right in front of the viewer.
   const opacity = useTransform(
     relativeDepth,
-    [-5000, -3400, -2600, -2000, -1400, -900, -500, 0, 400, 800, 1400, 2200, 3000, 4000, 5000],
-    [0, 0.08, 0.16, 0.24, 0.3, 0.34, 0.38, 0.42, 0.36, 0.42, 0.56, 0.7, 0.76, 0.36, 0]
+    [-5000, -3600, -2800, -2200, -1600, -1000, -600, 0, 600, 1200, 1800, 2400, 3000, 3600, 4200, 4700, 5000],
+    [0, 0.06, 0.12, 0.18, 0.24, 0.29, 0.34, 0.42, 0.38, 0.4, 0.45, 0.52, 0.6, 0.68, 0.72, 0.3, 0]
   );
 
   // Disable pointer events if section is far from focus
