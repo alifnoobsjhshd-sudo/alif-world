@@ -25,7 +25,7 @@ export const PaperAirplane = React.memo(({ scrollVelocity, smoothedDepth }: Pape
   // Rotation follows the scene position rather than the sign of the scroll
   // velocity, so reversing direction does not lock it to one bank.
   const swerve = useTransform([smoothedDepth, intensity], ([d, strength]) => {
-    const phase = ((d as number) / 2600) * Math.PI;
+    const phase = ((d as number) / 2400) * Math.PI;
     const sin   = Math.sin(phase);
     const cos   = Math.cos(phase);
 

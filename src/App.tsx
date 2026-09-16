@@ -59,17 +59,17 @@ function Portfolio({ initialLoading }: { initialLoading: boolean }) {
   // the scene, not to scroll direction, so forward and backward travel do not
   // force the whole world to lean toward one fixed side.
   const cameraSway = useTransform(smoothedDepth, (depth) => {
-    return Math.sin((depth / 2600) * Math.PI);
+    return Math.sin((depth / 2400) * Math.PI);
   });
   const cameraLift = useTransform(smoothedDepth, (depth) => {
-    return Math.cos((depth / 2600) * Math.PI);
+    return Math.cos((depth / 2400) * Math.PI);
   });
-  const worldRotateY = useTransform(cameraSway, (sway) => sway * 3.5);
-  const smoothWorldRotateY = useSpring(worldRotateY, { stiffness: 32, damping: 28, mass: 1.1 });
-  const worldRotateZ = useTransform(cameraSway, (sway) => sway * -1.6);
-  const smoothWorldRotateZ = useSpring(worldRotateZ, { stiffness: 32, damping: 28, mass: 1.1 });
-  const worldRotateX = useTransform(cameraLift, (lift) => lift * 1.4);
-  const smoothWorldRotateX = useSpring(worldRotateX, { stiffness: 32, damping: 28, mass: 1.1 });
+  const worldRotateY = useTransform(cameraSway, (sway) => sway * 8);
+  const smoothWorldRotateY = useSpring(worldRotateY, { stiffness: 34, damping: 28, mass: 1 });
+  const worldRotateZ = useTransform(cameraSway, (sway) => sway * -3.2);
+  const smoothWorldRotateZ = useSpring(worldRotateZ, { stiffness: 34, damping: 28, mass: 1 });
+  const worldRotateX = useTransform(cameraLift, (lift) => lift * 2);
+  const smoothWorldRotateX = useSpring(worldRotateX, { stiffness: 34, damping: 28, mass: 1 });
 
   const worldScale   = useTransform(depthVelocity, [-4000, 0, 4000], [1.03, 1.0, 1.03]);
   const smoothWorldScale = useSpring(worldScale, { stiffness: 35, damping: 25, mass: 1 });
@@ -349,6 +349,7 @@ function Portfolio({ initialLoading }: { initialLoading: boolean }) {
             translateX: smoothWorldTranslateX,
             translateY: smoothWorldTranslateY,
             transformOrigin: '50% 50%',
+            transformStyle: 'preserve-3d',
             willChange: 'transform',
           }}
         >
