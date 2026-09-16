@@ -20,11 +20,15 @@ export const Section = React.memo(({
     return diff;
   });
 
-  // Reduced scale at the "just passed" end so sections don't balloon up and cause a white flash
-  const z       = useTransform(relativeDepth, [-1200, 0, 5000], [500,  0, -2200]);
-  const scale   = useTransform(relativeDepth, [-1200, 0, 5000], [1.15, 1,  0.05]);
-  // Quick fade-out when a section passes the viewer — eliminates the lingering-white-fill
-  const opacity = useTransform(relativeDepth, [-900, -200, 0, 2000, 4200], [0, 0.15, 1, 0.4, 0]);
+  // Keep a generous overlap between neighboring scenes so a fast, controlled
+  // scroll never reveals a blank frame between their fades.
+  const z       = useTransform(relativeDepth, [-1800, 0, 5000], [500,  0, -2200]);
+  const scale   = useTransform(relativeDepth, [-1800, 0, 5000], [1.1, 1,  0.18]);
+  const opacity = useTransform(
+    relativeDepth,
+    [-5000, -2200, -1200, 0, 2200, 5000],
+    [0, 0.35, 0.72, 1, 0.62, 0]
+  );
 
   // Disable pointer events if section is far from focus
   const pointerEvents = useTransform(relativeDepth, (val: number) => {
@@ -34,7 +38,7 @@ export const Section = React.memo(({
   // Optimize rendering by using 'visibility: hidden' on out-of-bounds sections.
   // This directs the GPU/browser to completely skip compositor draws when offscreen.
   const visibility = useTransform(relativeDepth, (val: number) => {
-    return (val < -1000 || val > 4400) ? 'hidden' : 'visible';
+    return (val < -2600 || val > 5200) ? 'hidden' : 'visible';
   });
 
   return (

@@ -15,29 +15,27 @@ interface PaperAirplaneProps {
 export const PaperAirplane = React.memo(({ scrollVelocity, smoothedDepth }: PaperAirplaneProps) => {
 
   // ── Intensity Modulation ──────────────────────────────────────────────────
-  // How "wide" the plane swerves depends on scrolling speed.
-  // We use the scrollVelocity but smooth it heavily to prevent "jitter".
-  const rawIntensity = useTransform(scrollVelocity, [-3500, 0, 3500], [1.1, 0, 1.1]);
-  const intensity    = useSpring(rawIntensity, { stiffness: 25, damping: 35, mass: 2 });
+  // Keep the plane's motion visible at rest, but let a controlled amount of
+  // momentum show through while scrolling.
+  const rawIntensity = useTransform(scrollVelocity, [-1800, 0, 1800], [0.75, 0, 0.75]);
+  const intensity    = useSpring(rawIntensity, { stiffness: 22, damping: 32, mass: 2 });
 
   // ── Movement & Rotation ────────────────────────────────────────────────────
-  // We drive everything from a core sine wave of the depth.
-  // This ensures the Middle -> Right -> Middle -> Left -> Middle pattern.
+  // Drive the plane from the same alternating depth cycle as the camera.
+  // Rotation follows the scene position rather than the sign of the scroll
+  // velocity, so reversing direction does not lock it to one bank.
   const swerve = useTransform([smoothedDepth, intensity], ([d, strength]) => {
-    const phase = (d as number) * 0.00075;
+    const phase = ((d as number) / 2600) * Math.PI;
     const sin   = Math.sin(phase);
+    const cos   = Math.cos(phase);
 
-    // Horizontal swaying distance (scaled by velocity intensity)
-    const x = sin * 90 * (strength as number);
+    // Preserve the original horizontal travel while softening the added tilt.
+    const x = sin * 90;
 
-    // Rotations: We adjust signs so the plane "looks" back at the center.
-    // If x is positive (right), bank and yaw should be negative (steer left).
-    const bank  = sin * -22 * (strength as number);   // Roll towards center
-    const yaw   = sin * -18 * (strength as number);   // Nose towards center
-    
-    // Pitch: Slghtly dip the nose when moving fast, or pull up slightly 
-    // depending on the side to maintain a "focused" look towards the center.
-    const pitch = (Math.abs(sin) * 4 * (strength as number)) - 14; 
+    const movement = strength as number;
+    const bank  = sin * -12;
+    const yaw   = sin * -8;
+    const pitch = -12 + cos * 1.8 + movement * 1.2;
 
     return { x, bank, yaw, pitch };
   });

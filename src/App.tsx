@@ -36,14 +36,14 @@ function Portfolio({ initialLoading }: { initialLoading: boolean }) {
   // ── Depth motion value — the "camera Z position" ──────────────────────────
   const depthValue   = useMotionValue(0);
   const smoothedDepth = useSpring(depthValue, {
-    stiffness: 45,   // Slightly softer for more fluid motion
-    damping:   35,   // Higher damping to prevent oscillation
-    mass:      0.8,  // More mass for "heavier", premium feel
+    stiffness: 42,
+    damping:   34,
+    mass:      0.9,
     restDelta: 0.1,
   });
   
-  // Clean velocity from raw input is MUCH smoother for driving rotations
-  const depthVelocity = useVelocity(depthValue);
+  // Use the camera's settled velocity so input spikes do not become camera shakes.
+  const depthVelocity = useVelocity(smoothedDepth);
 
   // ── Active section tracking ────────────────────────────────────────────────
   const [activeSection, setActiveSection] = useState(0);
@@ -54,22 +54,31 @@ function Portfolio({ initialLoading }: { initialLoading: boolean }) {
     setActiveSection(idx);
   });
 
-  // ── World tilt transforms ──────────────────────────────────────────────────
-  // We use the raw depthVelocity but pass it through a heavy spring
-  const worldRotateX = useTransform(depthVelocity, [-3000, 0, 3000], [12, 0, -12]);
-  const smoothWorldRotateX = useSpring(worldRotateX, { stiffness: 35, damping: 25, mass: 1 });
-
-  const worldRotateZ = useTransform(depthVelocity, [-3000, 0, 3000], [-3, 0, 3]);
-  const smoothWorldRotateZ = useSpring(worldRotateZ, { stiffness: 35, damping: 25, mass: 1 });
+  // ── World camera motion ────────────────────────────────────────────────────
+  // The camera alternates from side to side as the depth changes. It is tied to
+  // the scene, not to scroll direction, so forward and backward travel do not
+  // force the whole world to lean toward one fixed side.
+  const cameraSway = useTransform(smoothedDepth, (depth) => {
+    return Math.sin((depth / 2600) * Math.PI);
+  });
+  const cameraLift = useTransform(smoothedDepth, (depth) => {
+    return Math.cos((depth / 2600) * Math.PI);
+  });
+  const worldRotateY = useTransform(cameraSway, (sway) => sway * 3.5);
+  const smoothWorldRotateY = useSpring(worldRotateY, { stiffness: 32, damping: 28, mass: 1.1 });
+  const worldRotateZ = useTransform(cameraSway, (sway) => sway * -1.6);
+  const smoothWorldRotateZ = useSpring(worldRotateZ, { stiffness: 32, damping: 28, mass: 1.1 });
+  const worldRotateX = useTransform(cameraLift, (lift) => lift * 1.4);
+  const smoothWorldRotateX = useSpring(worldRotateX, { stiffness: 32, damping: 28, mass: 1.1 });
 
   const worldScale   = useTransform(depthVelocity, [-4000, 0, 4000], [1.03, 1.0, 1.03]);
   const smoothWorldScale = useSpring(worldScale, { stiffness: 35, damping: 25, mass: 1 });
 
-  const worldTranslateX = useTransform(depthVelocity, [-3000, 0, 3000], [12, 0, -12]);
-  const smoothWorldTranslateX = useSpring(worldTranslateX, { stiffness: 35, damping: 25, mass: 1 });
+  const worldTranslateX = useTransform(depthVelocity, [-1800, 0, 1800], [8, 0, -8]);
+  const smoothWorldTranslateX = useSpring(worldTranslateX, { stiffness: 35, damping: 28, mass: 1 });
 
-  const worldTranslateY = useTransform(depthVelocity, [-3000, 0, 3000], [8, 0, 8]);
-  const smoothWorldTranslateY = useSpring(worldTranslateY, { stiffness: 35, damping: 25, mass: 1 });
+  const worldTranslateY = useTransform(depthVelocity, [-1800, 0, 1800], [5, 0, 5]);
+  const smoothWorldTranslateY = useSpring(worldTranslateY, { stiffness: 35, damping: 28, mass: 1 });
 
   const speedVignetteBg = useTransform(
     depthVelocity,
@@ -85,7 +94,10 @@ function Portfolio({ initialLoading }: { initialLoading: boolean }) {
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
-      depthValue.set(depthValue.get() + e.deltaY * 20);
+      // Trackpad and mouse-wheel deltas vary widely. Capping the input keeps a
+      // single gesture from skipping several scenes or causing a blank frame.
+      const delta = Math.max(-120, Math.min(120, e.deltaY));
+      depthValue.set(depthValue.get() + delta * 8);
     };
     window.addEventListener('wheel', handleWheel, { passive: false });
     return () => window.removeEventListener('wheel', handleWheel);
@@ -111,7 +123,7 @@ function Portfolio({ initialLoading }: { initialLoading: boolean }) {
       const delta = touchLastY.current - y;
       touchVelY.current  = delta;
       touchLastY.current = y;
-      depthValue.set(depthValue.get() + delta * 20);
+      depthValue.set(depthValue.get() + delta * 8);
     };
 
     // Momentum after finger lift
@@ -119,8 +131,8 @@ function Portfolio({ initialLoading }: { initialLoading: boolean }) {
       let vel = touchVelY.current;
       const step = () => {
         if (Math.abs(vel) < 0.1) return;
-        depthValue.set(depthValue.get() + vel * 12); // Reduced multiplier for more controlled stop
-        vel *= 0.92; // Slightly more friction for smoother decay
+        depthValue.set(depthValue.get() + vel * 7);
+        vel *= 0.88;
         rafId.current = requestAnimationFrame(step);
       };
       rafId.current = requestAnimationFrame(step);
@@ -331,6 +343,7 @@ function Portfolio({ initialLoading }: { initialLoading: boolean }) {
           className="relative w-full h-full preserve-3d gpu"
           style={{
             rotateX:    smoothWorldRotateX,
+            rotateY:    smoothWorldRotateY,
             rotateZ:    smoothWorldRotateZ,
             scale:      smoothWorldScale,
             translateX: smoothWorldTranslateX,
